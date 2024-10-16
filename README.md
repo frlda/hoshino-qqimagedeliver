@@ -2,7 +2,8 @@
 hoshino插件，接收并处理POST请求后处理，发送消息和图片到QQ好友或群
 
 如何使用？按照hoshino插件进行使用，配置__bot__.py启用，并将主体文件加入modules。
-改自https://github.com/tkkcc/qqimagedeliver/tree/master（改动幅度大，一点都没有原来的了，只套了功能）
+改自https://github.com/tkkcc/qqimagedeliver/tree/master
+（改动幅度大，一点都没有原来的了，只套了功能）
 可选发送个人还是群组，群组前缀＋g
 
 
