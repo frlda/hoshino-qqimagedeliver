@@ -5,19 +5,29 @@ from quart import Quart, request, jsonify
 import asyncio
 import logging
 
-#去除心跳提醒
-class HeartbeatFilter(logging.Filter):
-    def filter(self, record):
-        return "received event: meta_event.heartbeat" not in record.getMessage()
-
-
-root_logger = logging.getLogger()
-root_logger.addFilter(HeartbeatFilter())
-root_logger.setLevel(logging.INFO)
-
-
+# 日志记录器
 logger = logging.getLogger('qqimagedeliver')
 logger.setLevel(logging.INFO)
+
+
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+class CustomFilter(logging.Filter):
+    def filter(self, record):
+        return not any(msg in record.getMessage() for msg in [
+            "HTTP Request:",
+            "get_profile",
+            "login"
+        ])
+
+handler.addFilter(CustomFilter())
+logger.addHandler(handler)
+
+# 禁用 quart 和 _client 的日志
+logging.getLogger('quart').setLevel(logging.WARNING)
+logging.getLogger('_client').setLevel(logging.WARNING)
 
 sv = Service('qqimagedeliver', help_='接收并处理POST请求，发送消息和图片到QQ好友或群')
 
@@ -87,6 +97,5 @@ async def run_server():
 async def startup():
     asyncio.create_task(run_server())
     logger.info('qqimagedeliver插件已初始化并在端口8888上启动')
-
 
 startup()
